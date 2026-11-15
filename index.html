@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Décharge véhicule - SARL AMAR MERAR</title>
+<title>Décharge véhicule - AMAR MERAR</title>
 
 <style>
 * {
@@ -408,7 +407,7 @@ textarea {
         Réinitialiser
     </button>
 
-    <button type="button" onclick="window.print()">
+    <button type="button" onclick="imprimerDecharge()">
         Imprimer / Enregistrer en PDF
     </button>
 </div>
@@ -436,7 +435,7 @@ textarea {
 <div class="identity">
     <div class="field">
         <label>M. :</label>
-        <input type="text">
+        <input type="text" id="beneficiaireNom" placeholder="Nom et prénom">
     </div>
 
     <div class="field">
@@ -669,6 +668,29 @@ sis à Naciria, Wilaya de Boumerdès.
 </main>
 
 <script>
+function imprimerDecharge() {
+    const champNom = document.getElementById("beneficiaireNom");
+    const nom = champNom.value.trim();
+
+    if (!nom) {
+        alert("Veuillez saisir le nom et le prénom du bénéficiaire.");
+        champNom.focus();
+        return;
+    }
+
+    const nomNettoye = nom
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toUpperCase()
+        .replace(/[^A-Z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "");
+
+    const ancienTitre = document.title;
+    document.title = `Decharge_Vehicule_${nomNettoye}`;
+    window.print();
+    setTimeout(() => { document.title = ancienTitre; }, 1000);
+}
+
 function resetForm() {
     if (confirm("Voulez-vous vraiment vider tous les champs du formulaire ?")) {
         document.querySelectorAll("input").forEach(input => {
