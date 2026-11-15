@@ -1,0 +1,690 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Décharge véhicule - SARL AMAR MERAR</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    background: #edf1f5;
+    color: #172033;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+}
+
+.toolbar {
+    max-width: 210mm;
+    margin: 0 auto 15px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+button {
+    border: none;
+    border-radius: 5px;
+    padding: 11px 18px;
+    background: #173b63;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button.reset {
+    background: #64748b;
+}
+
+.sheet {
+    width: 210mm;
+    min-height: 297mm;
+    margin: auto;
+    padding: 9mm 11mm;
+    background: white;
+    box-shadow: 0 3px 15px #0002;
+}
+
+.company {
+    border-bottom: 2px solid #173b63;
+    padding-bottom: 6px;
+}
+
+.company strong {
+    display: block;
+    font-size: 17px;
+    color: #173b63;
+}
+
+.company span {
+    color: #64748b;
+    font-size: 11px;
+}
+
+.date {
+    text-align: right;
+    margin: 7px 0;
+}
+
+h1 {
+    text-align: center;
+    color: #173b63;
+    font-size: 16px;
+    margin: 8px 0;
+    line-height: 1.3;
+}
+
+h2 {
+    background: #173b63;
+    color: white;
+    font-size: 10px;
+    padding: 4px 7px;
+    margin: 7px 0 5px;
+    text-transform: uppercase;
+}
+
+p {
+    margin: 4px 0;
+}
+
+.identity {
+    display: grid;
+    gap: 3px;
+    margin: 5px 0;
+}
+
+.field {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    margin: 3px 0;
+    min-width: 0;
+}
+
+.field label {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"] {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    border-bottom: 1px dotted #64748b;
+    background: transparent;
+    padding: 2px;
+    font: inherit;
+    color: #172033;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px 12px;
+}
+
+.checks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 12px;
+}
+
+.check {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+input[type="checkbox"] {
+    width: 12px;
+    height: 12px;
+    margin: 0;
+    accent-color: #173b63;
+    flex-shrink: 0;
+}
+
+.section {
+    margin-top: 5px;
+}
+
+.wheels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.wheel {
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 6px;
+}
+
+.wheel strong {
+    display: block;
+    margin-bottom: 3px;
+}
+
+.wheel .field {
+    margin: 3px 0;
+}
+
+.wheel-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+textarea {
+    width: 100%;
+    height: 38px;
+    resize: none;
+    border: 1px solid #cbd5e1;
+    padding: 5px;
+    font: inherit;
+}
+
+.commitment {
+    text-align: justify;
+    line-height: 1.35;
+    margin-top: 7px;
+}
+
+.signatures {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-top: 12px;
+}
+
+.signature strong {
+    display: block;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.signature-space {
+    height: 35px;
+}
+
+.signature-line {
+    border-bottom: 1px dotted #64748b;
+    padding-bottom: 3px;
+}
+
+.footer {
+    text-align: center;
+    color: #64748b;
+    font-size: 9px;
+    margin-top: 7px;
+}
+
+@media(max-width: 800px) {
+    body {
+        padding: 8px;
+    }
+
+    .sheet {
+        width: 100%;
+        padding: 12px;
+    }
+
+    .grid,
+    .checks,
+    .wheels,
+    .signatures {
+        grid-template-columns: 1fr;
+    }
+
+    .toolbar {
+        flex-wrap: wrap;
+    }
+}
+
+@page {
+    size: A4 portrait;
+    margin: 0;
+}
+
+@media print {
+
+    html, body {
+        width: 210mm;
+        height: 297mm;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+        font-size: 7.5px !important;
+        line-height: 1.1 !important;
+    }
+
+    .toolbar {
+        display: none !important;
+    }
+
+    .sheet {
+        width: 210mm !important;
+        height: 297mm !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 7mm 9mm !important;
+        box-shadow: none !important;
+        overflow: hidden !important;
+    }
+
+    .company {
+        padding-bottom: 3px !important;
+    }
+
+    .company strong {
+        font-size: 13px !important;
+    }
+
+    .company span {
+        font-size: 8px !important;
+    }
+
+    .date {
+        margin: 4px 0 !important;
+    }
+
+    h1 {
+        font-size: 12px !important;
+        margin: 4px 0 !important;
+        line-height: 1.1 !important;
+    }
+
+    h2 {
+        font-size: 8px !important;
+        padding: 2px 5px !important;
+        margin: 4px 0 2px !important;
+        background: #173b63 !important;
+        color: white !important;
+    }
+
+    p {
+        margin: 2px 0 !important;
+    }
+
+    .identity {
+        gap: 1px !important;
+        margin: 2px 0 !important;
+    }
+
+    .field {
+        margin: 1px 0 !important;
+        gap: 3px !important;
+    }
+
+    .grid,
+    .checks {
+        gap: 1px 7px !important;
+    }
+
+    .section {
+        margin-top: 2px !important;
+        break-inside: avoid !important;
+    }
+
+    .check {
+        gap: 3px !important;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"] {
+        font-size: 7.5px !important;
+        padding: 1px !important;
+    }
+
+    input[type="checkbox"] {
+        width: 10px !important;
+        height: 10px !important;
+    }
+
+    .wheels {
+        gap: 5px !important;
+    }
+
+    .wheel {
+        padding: 3px !important;
+    }
+
+    .wheel-options {
+        gap: 4px !important;
+    }
+
+    textarea {
+        height: 25px !important;
+        font-size: 7.5px !important;
+        padding: 2px !important;
+    }
+
+    .commitment {
+        font-size: 7.5px !important;
+        line-height: 1.15 !important;
+        margin-top: 3px !important;
+    }
+
+    .signatures {
+        margin-top: 5px !important;
+        gap: 15px !important;
+        break-inside: avoid !important;
+    }
+
+    .signature strong {
+        font-size: 8px !important;
+    }
+
+    .signature-space {
+        height: 20px !important;
+    }
+
+    .footer {
+        font-size: 7px !important;
+        margin-top: 3px !important;
+    }
+
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="toolbar">
+    <button class="reset" type="button" onclick="resetForm()">
+        Réinitialiser
+    </button>
+
+    <button type="button" onclick="window.print()">
+        Imprimer / Enregistrer en PDF
+    </button>
+</div>
+
+<main class="sheet" id="document">
+
+<header class="company">
+    <strong>SARL AMAR MERAR</strong>
+    <span>Distributeur de produits alimentaires</span><br>
+    <span>Z.I. Naciria – Wilaya de Boumerdès</span>
+</header>
+
+<div class="date">
+    NACIRIA, LE :
+    <input type="date" style="max-width:150px">
+</div>
+
+<h1>
+    DÉCHARGE DE REMISE DE VÉHICULE<br>
+    ET D'ÉQUIPEMENTS
+</h1>
+
+<p>Je soussigné(e),</p>
+
+<div class="identity">
+    <div class="field">
+        <label>M. :</label>
+        <input type="text">
+    </div>
+
+    <div class="field">
+        <label>Date de naissance :</label>
+        <input type="text">
+    </div>
+
+    <div class="field">
+        <label>Fonction :</label>
+        <input type="text">
+    </div>
+</div>
+
+<p>Déclare avoir reçu les éléments suivants :</p>
+
+<!-- 1. VEHICULE -->
+<section class="section">
+<h2>1. Identification du véhicule</h2>
+
+<div class="checks">
+    <label class="check"><input type="checkbox"> Poids lourd</label>
+    <label class="check"><input type="checkbox"> Semi-remorque</label>
+    <label class="check"><input type="checkbox"> Voiture de service</label>
+    <label class="check"><input type="checkbox"> Moto</label>
+    <label class="check"><input type="checkbox"> Autre</label>
+</div>
+
+<div class="grid">
+    <div class="field"><label>Marque / Modèle :</label><input type="text"></div>
+    <div class="field"><label>Immatriculation :</label><input type="text"></div>
+    <div class="field"><label>N° de châssis :</label><input type="text"></div>
+    <div class="field"><label>Numéro interne :</label><input type="text"></div>
+    <div class="field"><label>Kilométrage :</label><input type="number"></div>
+</div>
+</section>
+
+<!-- 2. REMORQUE -->
+<section class="section">
+<h2>2. Identification de la remorque (pour semi-remorque)</h2>
+
+<div class="grid">
+    <div class="field"><label>Marque / Modèle :</label><input type="text"></div>
+    <div class="field"><label>Immatriculation :</label><input type="text"></div>
+    <div class="field"><label>N° de châssis :</label><input type="text"></div>
+    <div class="field"><label>Numéro interne :</label><input type="text"></div>
+</div>
+</section>
+
+<!-- 3. SECURITE -->
+<section class="section">
+<h2>3. Équipements de sécurité</h2>
+
+<div class="checks">
+    <div class="check">
+        <input type="checkbox"> Gilet(s) – Qté :
+        <input type="number" style="width:35px;flex:0 0 40px">
+    </div>
+
+    <div class="check">
+        <input type="checkbox"> Triangle(s) – Qté :
+        <input type="number" style="width:35px;flex:0 0 40px">
+    </div>
+
+    <div class="check">
+        <input type="checkbox"> Extincteur – Réf. :
+        <input type="text">
+    </div>
+
+    <label class="check">
+        <input type="checkbox"> Boîte à pharmacie
+    </label>
+
+    <div class="check">
+        <input type="checkbox"> Casque (moto) – Qté :
+        <input type="number" style="width:35px;flex:0 0 40px">
+    </div>
+</div>
+</section>
+
+<!-- 4. OUTILLAGE -->
+<section class="section">
+<h2>4. Outillage et accessoires</h2>
+
+<div class="checks">
+    <label class="check"><input type="checkbox"> Un cric</label>
+    <label class="check"><input type="checkbox"> Une clé de goujons</label>
+    <label class="check"><input type="checkbox"> Une barre de cric</label>
+    <label class="check"><input type="checkbox"> Une rallonge</label>
+    <label class="check"><input type="checkbox"> Une ceinture à cliquet</label>
+    <label class="check"><input type="checkbox"> Tuyau avec manomètre / montre de pression</label>
+    <label class="check"><input type="checkbox"> Des cordes</label>
+    <label class="check"><input type="checkbox"> Des sangles / tendeurs</label>
+    <label class="check"><input type="checkbox"> Des bâches</label>
+    <label class="check"><input type="checkbox"> Des toiles en nylon</label>
+</div>
+
+<div class="field">
+    <label>Autres :</label>
+    <input type="text">
+</div>
+</section>
+
+<!-- 5. ROUES -->
+<section class="section">
+<h2>5. Roues de secours</h2>
+
+<div class="wheels">
+
+    <div class="wheel">
+        <strong>
+            <label><input type="checkbox"> Roue n° 1 (véhicule)</label>
+        </strong>
+
+        <div class="field">
+            <label>Référence :</label>
+            <input type="text">
+        </div>
+
+        <div class="wheel-options">
+            <b>État :</b>
+            <label><input type="checkbox"> Bon</label>
+            <label><input type="checkbox"> Usé</label>
+            <label><input type="checkbox"> À remplacer</label>
+        </div>
+    </div>
+
+    <div class="wheel">
+        <strong>
+            <label><input type="checkbox"> Roue n° 2 (remorque)</label>
+        </strong>
+
+        <div class="field">
+            <label>Référence :</label>
+            <input type="text">
+        </div>
+
+        <div class="wheel-options">
+            <b>État :</b>
+            <label><input type="checkbox"> Bon</label>
+            <label><input type="checkbox"> Usé</label>
+            <label><input type="checkbox"> À remplacer</label>
+            <label><input type="checkbox"> N/A</label>
+        </div>
+    </div>
+
+</div>
+</section>
+
+<!-- 6. CARBURANT -->
+<section class="section">
+<h2>6. Carte carburant / gasoil</h2>
+
+<div class="grid">
+    <label class="check">
+        <input type="checkbox"> Carte gasoil remise
+    </label>
+
+    <div class="field">
+        <label>Numéro de la carte :</label>
+        <input type="text">
+    </div>
+</div>
+</section>
+
+<!-- 7. REMARQUES -->
+<section class="section">
+<h2>7. Remarques</h2>
+<textarea></textarea>
+</section>
+
+<!-- ENGAGEMENT -->
+<section class="commitment">
+
+<h2>ENGAGEMENT DU CONDUCTEUR / BÉNÉFICIAIRE</h2>
+
+Je soussigné(e), bénéficiaire / conducteur désigné(e) ci-dessus,
+reconnais avoir reçu le véhicule ainsi que les équipements et accessoires
+cochés dans la présente décharge. Je m’engage à les conserver en bon état,
+à les utiliser conformément à leur destination et à signaler sans délai
+toute perte, dégradation ou anomalie. Toute restitution ou tout changement
+d’affectation devra être constaté par écrit.
+
+<p>
+La présente décharge est établie au bureau de l'entreprise
+SARL AMAR MERAR, distributeur de produits alimentaires,
+sis à Naciria, Wilaya de Boumerdès.
+</p>
+
+</section>
+
+<!-- SIGNATURES -->
+<div class="signatures">
+
+    <div class="signature">
+        <strong>Signature du chauffeur / bénéficiaire</strong>
+
+        <div class="field">
+            <label>Nom :</label>
+            <input type="text">
+        </div>
+
+        <div class="signature-space"></div>
+
+        <div class="signature-line">
+            Signature :
+        </div>
+    </div>
+
+    <div class="signature">
+        <strong>Signature du responsable du parc</strong>
+
+        <div class="field">
+            <label>Nom :</label>
+            <input type="text">
+        </div>
+
+        <div class="signature-space"></div>
+
+        <div class="signature-line">
+            Signature :
+        </div>
+    </div>
+
+</div>
+
+<div class="footer">
+    SARL AMAR MERAR – Décharge de remise de véhicule et d'équipements
+</div>
+
+</main>
+
+<script>
+function resetForm() {
+    if (confirm("Voulez-vous vraiment vider tous les champs du formulaire ?")) {
+        document.querySelectorAll("input").forEach(input => {
+            if (input.type === "checkbox") {
+                input.checked = false;
+            } else {
+                input.value = "";
+            }
+        });
+
+        document.querySelectorAll("textarea").forEach(area => {
+            area.value = "";
+        });
+    }
+}
+</script>
+
+</body>
+</html>
