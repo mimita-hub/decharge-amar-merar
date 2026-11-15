@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Décharge véhicule - AMAR MERAR</title>
+<title>Décharge véhicule - EURL AMAR MERAR</title>
 
 <style>
 * {
@@ -19,32 +19,57 @@ body {
     font-size: 12px;
 }
 
+/* Menu latéral de navigation et d'actions */
 .toolbar {
-    max-width: 210mm;
-    margin: 0 auto 15px;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    bottom: 20px;
+    width: 220px;
+    padding: 14px;
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
+    align-items: stretch;
     gap: 10px;
+    background: #ffffff;
+    border: 1px solid #d7dee8;
+    border-radius: 8px;
+    box-shadow: 0 3px 15px #0001;
+}
+
+.toolbar::before {
+    content: "EURL AMAR MERAR";
+    display: block;
+    color: #173b63;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    padding: 8px 2px 16px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #d7dee8;
 }
 
 button {
     border: none;
     border-radius: 5px;
-    padding: 11px 18px;
+    padding: 12px 13px;
     background: #173b63;
     color: white;
     font-weight: bold;
+    text-align: left;
+    line-height: 1.35;
     cursor: pointer;
 }
 
 button.reset {
     background: #64748b;
+    margin-top: auto;
 }
 
 .sheet {
     width: 210mm;
     min-height: 297mm;
-    margin: auto;
+    margin: 0 auto 0 calc(240px + (100vw - 240px - 210mm) / 2);
     padding: 9mm 11mm;
     background: white;
     box-shadow: 0 3px 15px #0002;
@@ -53,6 +78,7 @@ button.reset {
 .company {
     border-bottom: 2px solid #173b63;
     padding-bottom: 6px;
+    text-align: center;
 }
 
 .company strong {
@@ -225,13 +251,40 @@ textarea {
     margin-top: 7px;
 }
 
-@media(max-width: 800px) {
+@media(max-width: 1050px) {
     body {
-        padding: 8px;
+        padding: 10px;
+    }
+
+    .toolbar {
+        position: static;
+        width: 100%;
+        height: auto;
+        margin: 0 auto 14px;
+        padding: 10px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .toolbar::before {
+        width: 100%;
+        padding: 4px 2px 9px;
+        margin: 0;
+    }
+
+    .toolbar button {
+        flex: 1 1 180px;
+        text-align: center;
+    }
+
+    button.reset {
+        margin-top: 0;
     }
 
     .sheet {
         width: 100%;
+        margin: 0 auto;
         padding: 12px;
     }
 
@@ -241,11 +294,64 @@ textarea {
     .signatures {
         grid-template-columns: 1fr;
     }
-
-    .toolbar {
-        flex-wrap: wrap;
-    }
 }
+
+/* Écran de connexion (protection simple côté navigateur) */
+.login-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: #edf1f5;
+}
+.login-card {
+    width: 100%;
+    max-width: 360px;
+    padding: 28px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 25px #0002;
+    text-align: center;
+}
+.login-company {
+    color: #173b63;
+    font-size: 18px;
+    font-weight: bold;
+}
+.login-card h2 {
+    margin: 18px 0 8px;
+}
+.login-card p {
+    color: #64748b;
+    margin-bottom: 16px;
+}
+.login-card input {
+    width: 100%;
+    padding: 11px;
+    margin-bottom: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 5px;
+    font: inherit;
+}
+.login-card button {
+    width: 100%;
+}
+.login-error {
+    min-height: 18px;
+    margin-top: 10px;
+    color: #b91c1c;
+}
+body.locked > .toolbar,
+body.locked > #document,
+body.locked > #documentTelephone {
+    display: none !important;
+}
+.sheet.hidden { display: none; }
+.toolbar .tab { background: #64748b; }
+.toolbar .tab.active { background: #173b63; }
 
 @page {
     size: A4 portrait;
@@ -264,9 +370,11 @@ textarea {
         line-height: 1.1 !important;
     }
 
-    .toolbar {
+    .toolbar, #loginScreen {
         display: none !important;
     }
+
+    .sheet:not(.active) { display: none !important; }
 
     .sheet {
         width: 210mm !important;
@@ -400,22 +508,30 @@ textarea {
 </style>
 </head>
 
-<body>
+<body class="locked">
 
-<div class="toolbar">
-    <button class="reset" type="button" onclick="resetForm()">
-        Réinitialiser
-    </button>
-
-    <button type="button" onclick="imprimerDecharge()">
-        Imprimer / Enregistrer en PDF
-    </button>
+<div id="loginScreen" class="login-screen">
+    <form class="login-card" onsubmit="return verifierMotDePasse(event)">
+        <div class="login-company">EURL AMAR MERAR</div>
+        <h2>Accès à la décharge</h2>
+        <p>Veuillez saisir le mot de passe pour continuer.</p>
+        <input id="motDePasse" type="password" placeholder="Mot de passe" autocomplete="current-password" required autofocus>
+        <button type="submit">Se connecter</button>
+        <div id="loginError" class="login-error" aria-live="polite"></div>
+    </form>
 </div>
 
-<main class="sheet" id="document">
+<div class="toolbar">
+    <button type="button" class="tab active" id="tabVehicule" onclick="changerModele('vehicule')">Décharge véhicule</button>
+    <button type="button" class="tab" id="tabTelephone" onclick="changerModele('telephone')">Décharge téléphone / SIM</button>
+    <button class="reset" type="button" onclick="resetForm()">Réinitialiser</button>
+    <button type="button" onclick="imprimerDecharge()">Imprimer / Enregistrer en PDF</button>
+</div>
+
+<main class="sheet active" id="document">
 
 <header class="company">
-    <strong>SARL AMAR MERAR</strong>
+    <strong>EURL AMAR MERAR</strong>
     <span>Distributeur de produits alimentaires</span><br>
     <span>Z.I. Naciria – Wilaya de Boumerdès</span>
 </header>
@@ -620,7 +736,7 @@ d’affectation devra être constaté par écrit.
 
 <p>
 La présente décharge est établie au bureau de l'entreprise
-SARL AMAR MERAR, distributeur de produits alimentaires,
+EURL AMAR MERAR, distributeur de produits alimentaires,
 sis à Naciria, Wilaya de Boumerdès.
 </p>
 
@@ -662,49 +778,148 @@ sis à Naciria, Wilaya de Boumerdès.
 </div>
 
 <div class="footer">
-    SARL AMAR MERAR – Décharge de remise de véhicule et d'équipements
+    EURL AMAR MERAR – Décharge de remise de véhicule et d'équipements
 </div>
 
 </main>
 
-<script>
-function imprimerDecharge() {
-    const champNom = document.getElementById("beneficiaireNom");
-    const nom = champNom.value.trim();
+<!-- DEUXIÈME MODÈLE : TÉLÉPHONE ET CARTE SIM -->
+<main class="sheet hidden" id="documentTelephone">
+    <header class="company">
+        <strong>EURL AMAR MERAR</strong>
+        <span>Distributeur de produits alimentaires</span><br>
+        <span>Z.I. Naciria – Wilaya de Boumerdès</span>
+    </header>
 
+    <div class="date">NACIRIA, LE : <input type="date" style="max-width:150px"></div>
+    <h1>DÉCHARGE DE REMISE DE TÉLÉPHONE<br>ET / OU DE CARTE SIM</h1>
+    <p>Je soussigné(e),</p>
+    <div class="identity">
+        <div class="field"><label>M. / Mme :</label><input type="text" id="telBeneficiaire" placeholder="Nom et prénom"></div>
+        <div class="field"><label>Fonction :</label><input type="text"></div>
+        <div class="field"><label>Service / Dépôt :</label><input type="text"></div>
+    </div>
+    <p>Reconnais avoir reçu de l'entreprise le matériel et / ou la carte SIM cochés ci-dessous :</p>
+
+    <section class="section">
+        <h2>1. Nature de la remise</h2>
+        <div class="checks">
+            <label class="check"><input type="checkbox"> Téléphone professionnel + carte SIM</label>
+            <label class="check"><input type="checkbox"> Carte SIM professionnelle seule</label>
+            <label class="check"><input type="checkbox"> Téléphone professionnel seul</label>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>2. Identification du téléphone professionnel (si remis)</h2>
+        <div class="grid">
+            <div class="field"><label>Marque / Modèle :</label><input type="text"></div>
+            <div class="field"><label>N° de série :</label><input type="text"></div>
+            <div class="field"><label>IMEI 1 :</label><input type="text"></div>
+            <div class="field"><label>IMEI 2 :</label><input type="text"></div>
+            <div class="field"><label>État du téléphone :</label><input type="text" placeholder="Neuf / Bon / Usagé"></div>
+        </div>
+        <div class="checks">
+            <label class="check"><input type="checkbox"> Chargeur</label>
+            <label class="check"><input type="checkbox"> Câble USB</label>
+            <label class="check"><input type="checkbox"> Coque de protection</label>
+            <label class="check"><input type="checkbox"> Écouteurs</label>
+            <label class="check"><input type="checkbox"> Autre accessoire</label>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>3. Identification de la carte SIM professionnelle (si remise)</h2>
+        <div class="grid">
+            <div class="field"><label>Opérateur :</label><input type="text" placeholder="Ooredoo / Mobilis / Djezzy"></div>
+            <div class="field"><label>Numéro de téléphone :</label><input type="text"></div>
+            <div class="field"><label>N° ICCID :</label><input type="text"></div>
+            <div class="field"><label>Type de ligne :</label><input type="text" placeholder="Voix / Data"></div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>4. Téléphone personnel utilisé (si le bénéficiaire utilise son propre téléphone)</h2>
+        <div class="grid">
+            <div class="field"><label>Marque / Modèle :</label><input type="text"></div>
+            <div class="field"><label>Observation :</label><input type="text" placeholder="Facultatif"></div>
+        </div>
+        <p>Dans ce cas, le téléphone demeure la propriété du bénéficiaire. Seule la carte SIM mentionnée ci-dessus est remise par l'entreprise.</p>
+    </section>
+
+    <section class="section">
+        <h2>5. Remarques</h2>
+        <textarea></textarea>
+    </section>
+
+    <section class="commitment">
+        <h2>ENGAGEMENT DU BÉNÉFICIAIRE</h2>
+        Le bénéficiaire reconnaît avoir reçu le téléphone professionnel et / ou la carte SIM indiqués dans la présente décharge. Il s'engage à les utiliser dans le cadre professionnel, à les conserver en bon état, à ne pas les prêter ni les céder sans autorisation et à signaler immédiatement toute perte, tout vol, toute panne ou dégradation. Le matériel et la carte SIM devront être restitués à l'entreprise à la fin de leur affectation ou à toute demande de l'entreprise. Lorsque le bénéficiaire utilise son téléphone personnel, celui-ci reste sa propriété et n'est pas considéré comme un matériel remis par l'entreprise.
+        <p>La présente décharge est établie au bureau de l'entreprise EURL AMAR MERAR, distributeur de produits alimentaires, sis à Naciria, Wilaya de Boumerdès.</p>
+    </section>
+
+    <div class="signatures">
+        <div class="signature"><strong>Signature du bénéficiaire</strong><div class="field"><label>Nom :</label><input type="text"></div><div class="signature-space"></div><div class="signature-line">Signature :</div></div>
+        <div class="signature"><strong>Signature du responsable informatique</strong><div class="field"><label>Nom :</label><input type="text"></div><div class="signature-space"></div><div class="signature-line">Signature :</div></div>
+    </div>
+    <div class="footer">EURL AMAR MERAR – Décharge de remise de téléphone et / ou de carte SIM</div>
+</main>
+
+<script>
+function verifierMotDePasse(event) {
+    event.preventDefault();
+    const motDePasseSaisi = document.getElementById("motDePasse").value;
+    const motDePasseCorrect = "1234decharge*26";
+
+    if (motDePasseSaisi === motDePasseCorrect) {
+        document.body.classList.remove("locked");
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("motDePasse").value = "";
+    } else {
+        document.getElementById("loginError").textContent = "Mot de passe incorrect. Réessayez.";
+        document.getElementById("motDePasse").value = "";
+        document.getElementById("motDePasse").focus();
+    }
+    return false;
+}
+
+let modeleActif = "vehicule";
+
+function changerModele(modele) {
+    modeleActif = modele;
+    const vehicule = modele === "vehicule";
+    document.getElementById("document").classList.toggle("hidden", !vehicule);
+    document.getElementById("document").classList.toggle("active", vehicule);
+    document.getElementById("documentTelephone").classList.toggle("hidden", vehicule);
+    document.getElementById("documentTelephone").classList.toggle("active", !vehicule);
+    document.getElementById("tabVehicule").classList.toggle("active", vehicule);
+    document.getElementById("tabTelephone").classList.toggle("active", !vehicule);
+}
+
+function imprimerDecharge() {
+    const telephone = modeleActif === "telephone";
+    const champNom = document.getElementById(telephone ? "telBeneficiaire" : "beneficiaireNom");
+    const nom = champNom.value.trim();
     if (!nom) {
         alert("Veuillez saisir le nom et le prénom du bénéficiaire.");
         champNom.focus();
         return;
     }
-
-    const nomNettoye = nom
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toUpperCase()
-        .replace(/[^A-Z0-9]+/g, "_")
-        .replace(/^_+|_+$/g, "");
-
+    const nomNettoye = nom.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9]+/g, "_").replace(/^_+|_+$/g, "");
     const ancienTitre = document.title;
-    document.title = `Decharge_Vehicule_${nomNettoye}`;
+    document.title = `${telephone ? "Decharge_Telephone_SIM" : "Decharge_Vehicule"}_${nomNettoye}`;
     window.print();
     setTimeout(() => { document.title = ancienTitre; }, 1000);
 }
 
 function resetForm() {
-    if (confirm("Voulez-vous vraiment vider tous les champs du formulaire ?")) {
-        document.querySelectorAll("input").forEach(input => {
-            if (input.type === "checkbox") {
-                input.checked = false;
-            } else {
-                input.value = "";
-            }
-        });
-
-        document.querySelectorAll("textarea").forEach(area => {
-            area.value = "";
-        });
-    }
+    if (!confirm("Voulez-vous vraiment vider tous les champs du formulaire affiché ?")) return;
+    const formulaire = document.getElementById(modeleActif === "telephone" ? "documentTelephone" : "document");
+    formulaire.querySelectorAll("input").forEach(input => {
+        if (input.type === "checkbox") input.checked = false;
+        else input.value = "";
+    });
+    formulaire.querySelectorAll("textarea").forEach(area => area.value = "");
 }
 </script>
 
